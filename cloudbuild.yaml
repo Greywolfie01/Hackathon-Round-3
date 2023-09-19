@@ -1,0 +1,6 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-docker.pkg.dev/cloudrun/container/hello', '.']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['run', 'deploy', 'syft-hackathon', '--image', 'us-docker.pkg.dev/cloudrun/container/hello', '--region', 'us-central1']
+images: ['us-docker.pkg.dev/cloudrun/container/hello']
