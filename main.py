@@ -14,13 +14,13 @@ def fetch_data_from_api(endpoint):
         return response.json().get('data', [])
     else:
         return []
+contacts = fetch_data_from_api('contacts')
+items = fetch_data_from_api('item')
+invoices = fetch_data_from_api('invoice')
+payments = fetch_data_from_api('payment')
 
 @app.route('/')
 def home():
-    contacts = fetch_data_from_api('contacts')
-    items = fetch_data_from_api('item')
-    invoices = fetch_data_from_api('invoice')
-    payments = fetch_data_from_api('payment')
 
     num_suppliers = sum(1 for contact in contacts if contact.get('is_supplier'))
     num_customers = sum(1 for contact in contacts if contact.get('is_customer'))
@@ -53,7 +53,34 @@ def home():
 
 @app.route('/data_analytics')
 def data_analytics():
-    return render_template('data_analytics.html', title='Data Analytics')
+
+    missing_supplier_emails = 0
+    missing_supplier_phones = 0
+    missing_customer_emails = 0
+    missing_customer_phones = 0
+
+    for contact in contacts:
+        if contact['is_supplier']:
+            if contact['email'] is None:
+                missing_supplier_emails += 1
+            if contact['phone'] is None:
+                missing_supplier_phones += 1
+        if contact['is_customer']:
+            if contact['email'] is None:
+                missing_customer_emails += 1
+            if contact['phone'] is None:
+                missing_customer_phones += 1
+
+    low_inventory_items = [item['name'] for item in items if item['quantity_on_hand'] < 30]
+    total_items_in_inventory = sum(item['quantity_on_hand'] for item in items)
+    total_value_of_inventory = sum(item['quantity_on_hand'] * item['purchase_unit_price'] for item in items)
+                
+    return render_template('data_analytics.html', title='Data Analytics', contacts=contacts, 
+                            missing_supplier_emails=missing_supplier_emails, missing_supplier_phones=missing_supplier_phones, 
+                            missing_customer_emails=missing_customer_emails, missing_customer_phones=missing_customer_phones,
+                            items=items, low_inventory_items=low_inventory_items, total_value_of_inventory=total_value_of_inventory,
+                            total_items_in_inventory=total_items_in_inventory)
+
 
 @app.route('/about')
 def about():

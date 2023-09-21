@@ -2,10 +2,161 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <style>
+        body {
+            background-image: url('https://970-cs-5f733fdf-d552-47ec-880d-423b9bd7ee00.cs-asia-southeast1-ajrg.cloudshell.dev/files/download/?id=b9d6ab07-2db4-48d0-8784-8d2899d2ac1d');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+        }
+    </style>
 </head>
-<body>
-    <h1>{{ title }}</h1>
-    <p>This is the data analytics page.</p>
-    <a href="/">Go Back to Home</a>
+<body onload="toggleTable()">
+    <div class="container">
+        <h1>Detailed Analytics</h1>
+        
+        <h2>Customer Analytics</h2>
+        <p>Missing Supplier Emails: {{ missing_supplier_emails }}</p>
+        <p>Missing Supplier Phone Numbers: {{ missing_supplier_phones }}</p>
+        <p>Missing Customer Emails: {{ missing_customer_emails }}</p>
+        <p>Missing Customer Phone Numbers: {{ missing_customer_phones }}</p>
+
+        <p>To view detailed information on suppliers/customers, select below:</p>
+
+        <label for="contactType">Show: </label>
+        <select id="contactType" onchange="toggleTable()">
+            <option value="None" selected>None</option>
+            <option value="Both">Both</option>
+            <option value="Customer">Customers</option>
+            <option value="Supplier">Suppliers</option>
+        </select>
+
+        <div id="tableContainer">
+            <h3 id="customerHeading" style="display:none;">Customers</h3>
+            <table id="customerTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contact in contacts if contact.is_customer %}
+                    <tr>
+                        <td>{{ contact.id }}</td>
+                        <td>{{ contact.name }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>{{ contact.phone }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3 id="supplierHeading" style="display:none;">Suppliers</h3>
+            <table id="supplierTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contact in contacts if contact.is_supplier %}
+                    <tr>
+                        <td>{{ contact.id }}</td>
+                        <td>{{ contact.name }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>{{ contact.phone }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>   
+
+    <script>
+        function toggleTable() {
+            var select = document.getElementById("contactType");
+            var customerTable = document.getElementById("customerTable");
+            var supplierTable = document.getElementById("supplierTable");
+            var customerHeading = document.getElementById("customerHeading");
+            var supplierHeading = document.getElementById("supplierHeading");
+
+            if (select.value === "Both") {
+                customerTable.style.display = "table";
+                supplierTable.style.display = "table";
+                customerHeading.style.display = "block";
+                supplierHeading.style.display = "block";
+            } else if (select.value === "Customer") {
+                customerTable.style.display = "table";
+                supplierTable.style.display = "none";
+                customerHeading.style.display = "block";
+                supplierHeading.style.display = "none";
+            } else if (select.value === "Supplier") {
+                customerTable.style.display = "none";
+                supplierTable.style.display = "table";
+                customerHeading.style.display = "none";
+                supplierHeading.style.display = "block";
+            } else {
+                customerTable.style.display = "none";
+                supplierTable.style.display = "none";
+                customerHeading.style.display = "none";
+                supplierHeading.style.display = "none";
+            }
+        }
+    </script>
+
+    <h2>Inventory</h2>
+        {% if low_inventory_items %}
+        <p>Items that need to be replaced soon: {{ ", ".join(low_inventory_items) }}</p>
+        {% endif %}
+        
+        <p>Total Items in Inventory: {{ total_items_in_inventory }}</p>
+        <p>Total Value of Inventory: R{{ "{:,.2f}".format(total_value_of_inventory).replace(',', ' ') }}</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Quantity on Hand</th>
+                    <th>Purchase Unit Price</th>
+                    <th>Sale Unit Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.code }}</td>
+                    <td>{{ item.quantity_on_hand }}</td>
+                    <td>{{ item.purchase_unit_price }}</td>
+                    <td>{{ item.sale_unit_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </body>
 </html>
