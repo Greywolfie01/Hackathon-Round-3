@@ -1,33 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>J's Cupcake Company</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #007BFF;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-    h1, p, a {
-      margin: 20px;
-    }
-    a {
-      color: white;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+    <title>{{ title }}</title>
 </head>
 <body>
-  <h1>Welcome to J's Cupcake Company!</h1>
-  <p>We're delighted to have you here! Dive into our range of delectable cupcakes and confectioneries, crafted to perfection.</p>
-  <p>As you explore, take advantage of our new web application designed to provide you with a seamless experience, from browsing to transaction completion.</p>
-  <p>Have questions or feedback? We'd love to hear from you!</p>
-  <p>Learn more about our application: <a href="about.html">About the Application</a></p>
+    <h1>Welcome to {{ title }}</h1>
+    <p>Number of Suppliers: {{ num_suppliers }}</p>
+    <p>Number of Customers: {{ num_customers }}</p>
+    <a href="/data_analytics">Go to Data Analytics</a>
 </body>
 </html>
