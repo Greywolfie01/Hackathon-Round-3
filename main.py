@@ -18,11 +18,38 @@ def fetch_data_from_api(endpoint):
 @app.route('/')
 def home():
     contacts = fetch_data_from_api('contacts')
+    items = fetch_data_from_api('item')
+    invoices = fetch_data_from_api('invoice')
+    payments = fetch_data_from_api('payment')
 
-    num_suppliers = sum([1 for contact in contacts if contact.get('is_supplier')])
-    num_customers = sum([1 for contact in contacts if contact.get('is_customer')])
+    num_suppliers = sum(1 for contact in contacts if contact.get('is_supplier'))
+    num_customers = sum(1 for contact in contacts if contact.get('is_customer'))
+    num_items = len(items)
+    num_invoices = len(invoices)
+    num_payments = len(payments)
 
-    return render_template('index.html', title='Business Dashboard', num_suppliers=num_suppliers, num_customers=num_customers)
+    total_items_in_inventory = sum(item['quantity_on_hand'] for item in items)
+    
+    total_invoices = sum(invoice['total'] for invoice in invoices)
+    total_payments = sum(payment['total'] for payment in payments)
+
+    total_invoices = sum(invoice['total'] for invoice in invoices)
+    total_payments = sum(payment['total'] for payment in payments)
+    
+    total_paid = sum(invoice['total'] - invoice['amount_due'] for invoice in invoices)
+    total_outstanding = sum(invoice['amount_due'] for invoice in invoices)
+    
+    total_received = sum(payment['total'] for payment in payments if payment['is_income'])
+    total_to_be_paid = sum(payment['total'] for payment in payments if not payment['is_income'])
+
+    return render_template('index.html', title='Business Analytics Dashboard', 
+                            num_suppliers=num_suppliers, num_customers=num_customers,
+                            num_items=num_items, num_invoices=num_invoices,
+                            num_payments=num_payments, total_invoices=total_invoices,
+                            total_payments=total_payments, total_paid=total_paid, 
+                            total_outstanding=total_outstanding,
+                            total_received=total_received, total_to_be_paid=total_to_be_paid,
+                            total_items_in_inventory=total_items_in_inventory)
 
 @app.route('/data_analytics')
 def data_analytics():

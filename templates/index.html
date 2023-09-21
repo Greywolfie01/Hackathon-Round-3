@@ -2,11 +2,68 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <style>
+        body {
+            background-image: url('https://970-cs-5f733fdf-d552-47ec-880d-423b9bd7ee00.cs-asia-southeast1-ajrg.cloudshell.dev/files/download/?id=8e111748-7d78-4355-901a-d3d7916e9666');
+            background-size: cover;  /* Cover the entire window */
+            background-attachment: fixed;  /* Fixed background */
+            color: #fff;  /* White text */
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);  /* Semi-transparent background for the container */
+            border-radius: 10px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        p, a {
+            margin: 10px 0;
+        }
+        .center-link {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to {{ title }}</h1>
-    <p>Number of Suppliers: {{ num_suppliers }}</p>
-    <p>Number of Customers: {{ num_customers }}</p>
-    <a href="/data_analytics">Go to Data Analytics</a>
+    <div class="container">
+        <h1>{{ 'J\'s Cupcake Company' }} </h1>
+        <p>This dashboard provides an analytics overview of J\'s Cupcake Company. 
+            It includes data related to suppliers, customers, items, invoices, and payments. 
+            This page serves as an overview with more detailed analytics available here: </p>
+            <div class="center-link">
+                <a href="/data_analytics" style="color: #fff;">Go to Detailed Data Analytics</a>
+            </div>
+        <h1>{{ title }} </h1>
+
+        <h2>General Information</h2>
+        <p>Number of Suppliers: {{num_suppliers}}</p>
+        <p>Number of Customers: {{num_customers}}</p>
+
+        <h2>Item Analytics</h2>
+        <p>Number of Items: {{num_items}}</p>
+        <p>Total Items in Inventory: {{ total_items_in_inventory }}</p>
+
+        <h2>Invoice Analytics</h2>
+        <p>Number of Invoices: {{num_invoices}}</p>
+        <p>Total Amount Invoiced: R{{ "{:,.2f}".format(total_invoices).replace(',', ' ') }}</p>
+        <p>Total Amount Received: R{{ "{:,.2f}".format(total_paid).replace(',', ' ') }}</p>
+        <p>Total Amount Outstanding: R{{ "{:,.2f}".format(total_outstanding).replace(',', ' ') }}</p>
+
+        <h2>Payment Analytics</h2>
+        <p>Number of Payments: {{num_payments}}</p>
+        <p>Total Amount of Payments: R{{ "{:,.2f}".format(total_payments).replace(',', ' ') }}</p>
+        <p>Total Amount Paid: R{{ "{:,.2f}".format(total_received).replace(',', ' ') }}</p>
+        <p>Total Amount to be Paid: R{{ "{:,.2f}".format(total_to_be_paid).replace(',', ' ') }}</p>
+
+        <div class="center-link">
+            <a href="/data_analytics" style="color: #fff;">Go to Detailed Data Analytics</a>
+        </div>
+    </div>
 </body>
 </html>
