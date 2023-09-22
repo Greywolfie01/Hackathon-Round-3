@@ -1,0 +1,9 @@
+The entire project was created on google cloud, using google cloud shell to edit and make the website. 
+
+All website features (tables and graphs) are scalable according to the input data. 
+Functionality was the main priority compared to looks, although an attempt was made for it to be a little good looking. 
+The background picture loads on occasion and does not load all the time, not enough time was available to discover why. 
+Contact tables are visible only when selected. 
+All graphs are responsive. 
+
+This was a overall hard project since it came between a multitude of tests and assignments due to WITS, however the assignment was done to my best ability considering the time constraint. 
