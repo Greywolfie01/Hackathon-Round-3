@@ -128,6 +128,7 @@
         <h2>Financial Analytics</h2>
         <p>Below is a graphical representation of the company's revenue over time. This chart provides insights into the financial performance of the organization, illustrating how revenue has fluctuated across different periods. The x-axis represents time, while the y-axis represents revenue in Rands. Use this chart to analyze trends and make informed financial decisions.</p>
         <canvas id="financialChart" width="400" height="200"></canvas>
+        <canvas id="ModifiedfinancialChart" width="400" height="200"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -171,6 +172,57 @@
                     label: 'Revenue',
                     data: [{% for value in revenue_values %}{{ value }},{% endfor %}],
                     backgroundColor: '#36A2EB',
+                },
+                {
+                    label: 'Expenses',
+                    data: [{% for value in expense_values %}{{ value }},{% endfor %}],
+                    backgroundColor: '#FF6384',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: [
+                        {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text : 'Revenue (in Rands)'
+                            },
+                            min: 0,
+                            max: 10000,
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1000
+                            }
+                        }
+                    ]
+                }
+            }
+        })
+
+        var ctx = document.getElementById('ModifiedfinancialChart').getContext('2d');
+        var ModifiedfinancialChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [{% for date in revenue_dates %}'{{ date }}',{% endfor %}],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [{% for value in filtered_revenue_values %}{{ value }},{% endfor %}],
+                    backgroundColor: '#36A2EB',
+                },
+                {
+                    label: 'Expenses',
+                    data: [{% for value in filtered_expense_values %}{{ value }},{% endfor %}],
+                    backgroundColor: '#FF6384',
                 }]
             },
             options: {
