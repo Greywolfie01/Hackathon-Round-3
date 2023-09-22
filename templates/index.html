@@ -51,15 +51,20 @@
 
         <h2>Invoice Analytics</h2>
         <p>Number of Invoices: {{num_invoices}}</p>
-        <p>Total Amount Invoiced: R{{ "{:,.2f}".format(total_invoices).replace(',', ' ') }}</p>
-        <p>Total Amount Received: R{{ "{:,.2f}".format(total_paid).replace(',', ' ') }}</p>
-        <p>Total Amount Outstanding: R{{ "{:,.2f}".format(total_outstanding).replace(',', ' ') }}</p>
+        
+        <p>Total Amount yet to be Received: R{{ "{:,.2f}".format(total_amount_to_be_received).replace(',', ' ') }}</p>
+        <p>Total Amount yet to be Paid: R{{ "{:,.2f}".format(total_amount_to_be_paid).replace(',', ' ') }}</p>
+
+        <p>Income from Invoices: R{{ "{:,.2f}".format(income_invoices).replace(',', ' ') }}</p>
+        <p>Expenses from Invoices: R{{ "{:,.2f}".format(expense_invoices).replace(',', ' ') }}</p>
+
 
         <h2>Payment Analytics</h2>
         <p>Number of Payments: {{num_payments}}</p>
-        <p>Total Amount of Payments: R{{ "{:,.2f}".format(total_payments).replace(',', ' ') }}</p>
-        <p>Total Amount Paid: R{{ "{:,.2f}".format(total_received).replace(',', ' ') }}</p>
-        <p>Total Amount to be Paid: R{{ "{:,.2f}".format(total_to_be_paid).replace(',', ' ') }}</p>
+
+        <p>Income from Payments: R{{ "{:,.2f}".format(income_payments).replace(',', ' ') }}</p>
+        <p>Expenses from Payments: R{{ "{:,.2f}".format(expense_payments).replace(',', ' ') }}</p>
+
 
         <div class="center-link">
             <a href="/data_analytics" style="color: #fff;">Go to Detailed Data Analytics</a>

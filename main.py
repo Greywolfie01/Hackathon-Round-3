@@ -29,27 +29,30 @@ def home():
     num_payments = len(payments)
 
     total_items_in_inventory = sum(item['quantity_on_hand'] for item in items)
-    
-    total_invoices = sum(invoice['total'] for invoice in invoices)
-    total_payments = sum(payment['total'] for payment in payments)
 
-    total_invoices = sum(invoice['total'] for invoice in invoices)
-    total_payments = sum(payment['total'] for payment in payments)
-    
-    total_paid = sum(invoice['total'] - invoice['amount_due'] for invoice in invoices)
-    total_outstanding = sum(invoice['amount_due'] for invoice in invoices)
-    
-    total_received = sum(payment['total'] for payment in payments if payment['is_income'])
-    total_to_be_paid = sum(payment['total'] for payment in payments if not payment['is_income'])
+    # Considering paid status, exchange rate, and currency for the total amount to be received and paid
+    total_amount_to_be_received = sum(invoice['amount_due'] * invoice['exchange_rate'] if invoice['is_sale'] and not invoice['paid'] and invoice['currency'] != 'ZAR' else invoice['amount_due'] for invoice in invoices if invoice['is_sale'] and not invoice['paid'])
+    total_amount_to_be_paid = sum(invoice['amount_due'] * invoice['exchange_rate'] if not invoice['is_sale'] and not invoice['paid'] and invoice['currency'] != 'ZAR' else invoice['amount_due'] for invoice in invoices if not invoice['is_sale'] and not invoice['paid'])
+
+    # Considering exchange rate and currency for income and expense from invoices
+    income_invoices = sum(invoice['total'] * invoice['exchange_rate'] if invoice['is_sale'] and invoice['currency'] != 'ZAR' else invoice['total'] for invoice in invoices if invoice['is_sale'])
+    expense_invoices = sum(invoice['total'] * invoice['exchange_rate'] if not invoice['is_sale'] and invoice['currency'] != 'ZAR' else invoice['total'] for invoice in invoices if not invoice['is_sale'])
+
+    # Considering exchange rate and currency for income and expense from payments
+    income_payments = sum(payment['total'] if payment['is_income'] else 0 for payment in payments)
+    expense_payments = sum(payment['total'] if not payment['is_income'] else 0 for payment in payments)
 
     return render_template('index.html', title='Business Analytics Dashboard', 
                             num_suppliers=num_suppliers, num_customers=num_customers,
                             num_items=num_items, num_invoices=num_invoices,
-                            num_payments=num_payments, total_invoices=total_invoices,
-                            total_payments=total_payments, total_paid=total_paid, 
-                            total_outstanding=total_outstanding,
-                            total_received=total_received, total_to_be_paid=total_to_be_paid,
-                            total_items_in_inventory=total_items_in_inventory)
+                            num_payments=num_payments,
+                            total_items_in_inventory=total_items_in_inventory,
+                            total_amount_to_be_received=total_amount_to_be_received,
+                            total_amount_to_be_paid=total_amount_to_be_paid,
+                            income_invoices=income_invoices,
+                            expense_invoices=expense_invoices,
+                            income_payments=income_payments,
+                            expense_payments=expense_payments)
 
 @app.route('/data_analytics')
 def data_analytics():
@@ -75,11 +78,18 @@ def data_analytics():
     total_items_in_inventory = sum(item['quantity_on_hand'] for item in items)
     total_value_of_inventory = sum(item['quantity_on_hand'] * item['purchase_unit_price'] for item in items)
                 
+    # Calculate money coming in (revenue)
+    revenue_invoices = [invoice for invoice in invoices if invoice['is_sale'] and invoice['paid']]
+    revenue_dates = [invoice['issue_date'] for invoice in revenue_invoices]
+    revenue_dates = [date[:10] for date in revenue_dates]
+    revenue_values = [invoice['total'] for invoice in revenue_invoices]
+
+    # Render the template with the calculated values
     return render_template('data_analytics.html', title='Data Analytics', contacts=contacts, 
                             missing_supplier_emails=missing_supplier_emails, missing_supplier_phones=missing_supplier_phones, 
                             missing_customer_emails=missing_customer_emails, missing_customer_phones=missing_customer_phones,
                             items=items, low_inventory_items=low_inventory_items, total_value_of_inventory=total_value_of_inventory,
-                            total_items_in_inventory=total_items_in_inventory)
+                            total_items_in_inventory=total_items_in_inventory, revenue_dates=revenue_dates, revenue_values=revenue_values)
 
 
 @app.route('/about')

@@ -90,41 +90,9 @@
                     {% endfor %}
                 </tbody>
             </table>
-        </div>   
+        </div>
 
-    <script>
-        function toggleTable() {
-            var select = document.getElementById("contactType");
-            var customerTable = document.getElementById("customerTable");
-            var supplierTable = document.getElementById("supplierTable");
-            var customerHeading = document.getElementById("customerHeading");
-            var supplierHeading = document.getElementById("supplierHeading");
-
-            if (select.value === "Both") {
-                customerTable.style.display = "table";
-                supplierTable.style.display = "table";
-                customerHeading.style.display = "block";
-                supplierHeading.style.display = "block";
-            } else if (select.value === "Customer") {
-                customerTable.style.display = "table";
-                supplierTable.style.display = "none";
-                customerHeading.style.display = "block";
-                supplierHeading.style.display = "none";
-            } else if (select.value === "Supplier") {
-                customerTable.style.display = "none";
-                supplierTable.style.display = "table";
-                customerHeading.style.display = "none";
-                supplierHeading.style.display = "block";
-            } else {
-                customerTable.style.display = "none";
-                supplierTable.style.display = "none";
-                customerHeading.style.display = "none";
-                supplierHeading.style.display = "none";
-            }
-        }
-    </script>
-
-    <h2>Inventory</h2>
+        <h2>Inventory</h2>
         {% if low_inventory_items %}
         <p>Items that need to be replaced soon: {{ ", ".join(low_inventory_items) }}</p>
         {% endif %}
@@ -156,7 +124,84 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <h2>Financial Analytics</h2>
+        <p>Below is a graphical representation of the company's revenue over time. This chart provides insights into the financial performance of the organization, illustrating how revenue has fluctuated across different periods. The x-axis represents time, while the y-axis represents revenue in Rands. Use this chart to analyze trends and make informed financial decisions.</p>
+        <canvas id="financialChart" width="400" height="200"></canvas>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function toggleTable() {
+            var select = document.getElementById("contactType");
+            var customerTable = document.getElementById("customerTable");
+            var supplierTable = document.getElementById("supplierTable");
+            var customerHeading = document.getElementById("customerHeading");
+            var supplierHeading = document.getElementById("supplierHeading");
+
+            if (select.value === "Both") {
+                customerTable.style.display = "table";
+                supplierTable.style.display = "table";
+                customerHeading.style.display = "block";
+                supplierHeading.style.display = "block";
+            } else if (select.value === "Customer") {
+                customerTable.style.display = "table";
+                supplierTable.style.display = "none";
+                customerHeading.style.display = "block";
+                supplierHeading.style.display = "none";
+            } else if (select.value === "Supplier") {
+                customerTable.style.display = "none";
+                supplierTable.style.display = "table";
+                customerHeading.style.display = "none";
+                supplierHeading.style.display = "block";
+            } else {
+                customerTable.style.display = "none";
+                supplierTable.style.display = "none";
+                customerHeading.style.display = "none";
+                supplierHeading.style.display = "none";
+            }
+        }
+
+        var ctx = document.getElementById('financialChart').getContext('2d');
+        var financialChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [{% for date in revenue_dates %}'{{ date }}',{% endfor %}],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [{% for value in revenue_values %}{{ value }},{% endfor %}],
+                    backgroundColor: '#36A2EB',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: [
+                        {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text : 'Revenue (in Rands)'
+                            },
+                            min: 0,
+                            max: 10000,
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1000
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+    </script>
 </body>
 </html>
