@@ -3,11 +3,12 @@
 <head>
     <title>{{ title }}</title>
     <style>
+        /* Styling for the webpage */
         body {
             background-image: url('https://970-cs-5f733fdf-d552-47ec-880d-423b9bd7ee00.cs-asia-southeast1-ajrg.cloudshell.dev/files/download/?id=50897728-a5ee-49f9-8493-ecde9a64327a');
-            background-size: cover;  /* Cover the entire window */
-            background-attachment: fixed;  /* Fixed background */
-            color: #fff;  /* White text */
+            background-size: cover; {% comment %} Cover the entire window with the background image  {% endcomment %}
+            background-attachment: fixed; {% comment %} Fixed background  {% endcomment %}
+            color: #fff; {% comment %}  White text  {% endcomment %}
             margin: 0;
             padding: 0;
             font-family: Arial, Helvetica, sans-serif;
@@ -16,30 +17,34 @@
             max-width: 800px;
             margin: auto;
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);  /* Semi-transparent background for the container */
+            background-color: rgba(0, 0, 0, 0.7); {% comment %} Semi-transparent background for the container{% endcomment %}
             border-radius: 10px;
         }
         h1, h2 {
-            text-align: center;
+            text-align: center; {% comment %} Center-align headings {% endcomment %}
         }
         p, a {
-            margin: 10px 0;
+            margin: 10px 0; {% comment %} Add margin to paragraphs and links {% endcomment %}
         }
         .center-link {
-            text-align: center;
+            text-align: center; {% comment %} Center-align links {% endcomment %}
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>{{ 'J\'s Cupcake Company' }} </h1>
+        <!-- Company Name -->
+        <h1>{{ 'J\'s Cupcake Company' }}</h1>
         <p>This dashboard provides an analytics overview of J's Cupcake Company. 
             It includes data related to suppliers, customers, items, invoices, and payments. 
-            This page serves as an overview with more detailed analytics available here: </p>
-            <div class="center-link">
-                <a href="/data_analytics" style="color: #fff;">Go to Detailed Data Analytics</a>
-            </div>
-        <h1>{{ title }} </h1>
+            This page serves as an overview with more detailed analytics available here:</p>
+        <!-- Link to Detailed Data Analytics -->
+        <div class="center-link">
+            <a href="/data_analytics" style="color: #fff;">Go to Detailed Data Analytics</a>
+        </div>
+
+        <!-- Page Title -->
+        <h1>{{ title }}</h1>
 
         <h2>General Information</h2>
         <p>Number of Suppliers: {{num_suppliers}}</p>
@@ -51,21 +56,17 @@
 
         <h2>Invoice Analytics</h2>
         <p>Number of Invoices: {{num_invoices}}</p>
-        
         <p>Total Amount yet to be Received: R{{ "{:,.2f}".format(total_amount_to_be_received).replace(',', ' ') }}</p>
         <p>Total Amount yet to be Paid: R{{ "{:,.2f}".format(total_amount_to_be_paid).replace(',', ' ') }}</p>
-
         <p>Income from Invoices: R{{ "{:,.2f}".format(income_invoices).replace(',', ' ') }}</p>
         <p>Expenses from Invoices: R{{ "{:,.2f}".format(expense_invoices).replace(',', ' ') }}</p>
 
-
         <h2>Payment Analytics</h2>
         <p>Number of Payments: {{num_payments}}</p>
-
         <p>Income from Payments: R{{ "{:,.2f}".format(income_payments).replace(',', ' ') }}</p>
         <p>Expenses from Payments: R{{ "{:,.2f}".format(expense_payments).replace(',', ' ') }}</p>
 
-
+        <!-- Link to Detailed Data Analytics (Repeated) -->
         <div class="center-link">
             <a href="/data_analytics" style="color: #fff;">Go to Detailed Data Analytics</a>
         </div>

@@ -3,6 +3,7 @@
 <head>
     <title>{{ title }}</title>
     <style>
+        {% comment %} Create proper styling for the page {% endcomment %}
         body {
             background-image: url('https://970-cs-5f733fdf-d552-47ec-880d-423b9bd7ee00.cs-asia-southeast1-ajrg.cloudshell.dev/files/download/?id=735a23fd-3015-467c-bd25-4ae6e4312788');
             background-size: cover;
@@ -38,6 +39,7 @@
 
         <p>To view detailed information on suppliers/customers, select below:</p>
 
+        {% comment %} Create the selector for viewing the table {% endcomment %}
         <label for="contactType">Show: </label>
         <select id="contactType" onchange="toggleTable()">
             <option value="None" selected>None</option>
@@ -46,6 +48,7 @@
             <option value="Supplier">Suppliers</option>
         </select>
 
+        {% comment %} create the table and make it change according to data {% endcomment %}
         <div id="tableContainer">
             <h3 id="customerHeading" style="display:none;">Customers</h3>
             <table id="customerTable" style="display:none;">
@@ -100,6 +103,7 @@
         <p>Total Items in Inventory: {{ total_items_in_inventory }}</p>
         <p>Total Value of Inventory: R{{ "{:,.2f}".format(total_value_of_inventory).replace(',', ' ') }}</p>
 
+        {% comment %} create table for inventory {% endcomment %}
         <table>
             <thead>
                 <tr>
@@ -128,6 +132,7 @@
         <h2>Financial Analytics</h2>
         <p>Below is a graphical representation of the company's revenue over time. The following graph shows th day to day inflow and outflow of cash ensuring there is enough mone coming in to maintain a adequate cash flow</p>
         
+        {% comment %} display financial charts {% endcomment %}
         <div style="text-align: center;">
             <h3>Day-to-day inflow/outflow chart</h3>
             <canvas id="ModifiedfinancialChart" width="400" height="200"></canvas>
@@ -138,6 +143,7 @@
             <canvas id="financialChart" width="400" height="200"></canvas>
         </div>
         
+        {% comment %} display the pie graph {% endcomment %}
         <p>Following are the invoices that are yet to be paid/recieved and how much is owing.</p>
         <div style="text-align: center;">
             <h3>Outstanding Invoices</h3>
@@ -192,6 +198,7 @@
 
     </div>
 
+    {% comment %} add in the correct java libraries {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         function toggleTable() {
@@ -201,6 +208,7 @@
             var customerHeading = document.getElementById("customerHeading");
             var supplierHeading = document.getElementById("supplierHeading");
 
+            // create logic for contact tables
             if (select.value === "Both") {
                 customerTable.style.display = "table";
                 supplierTable.style.display = "table";
@@ -224,6 +232,7 @@
             }
         }
 
+        // create the different charts with specified elements
         var ctx1 = document.getElementById('financialChart').getContext('2d');
         var financialChart = new Chart(ctx1, {
             type: 'line',

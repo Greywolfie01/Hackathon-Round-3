@@ -5,6 +5,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+# create function to get data from API
 def fetch_data_from_api(endpoint):
     api_key = "e6506999-8738-4866-a13f-2a2cfb14ba99"
     headers = {"x-api-key": api_key}
@@ -14,11 +15,14 @@ def fetch_data_from_api(endpoint):
         return response.json().get('data', [])
     else:
         return []
+    
+# get basic inputs from API 
 contacts = fetch_data_from_api('contacts')
 items = fetch_data_from_api('item')
 invoices = fetch_data_from_api('invoice')
 payments = fetch_data_from_api('payment')
 
+# create a home page (index page)
 @app.route('/')
 def home():
 
@@ -30,15 +34,15 @@ def home():
 
     total_items_in_inventory = sum(item['quantity_on_hand'] for item in items)
 
-    # Considering paid status, exchange rate, and currency for the total amount to be received and paid
+    # considering paid status, exchange rate, and currency for the total amount to be received and paid
     total_amount_to_be_received = sum(invoice['amount_due'] if invoice['is_sale'] and not invoice['paid'] and invoice['currency'] != 'ZAR' else invoice['amount_due'] for invoice in invoices if invoice['is_sale'] and not invoice['paid'])
     total_amount_to_be_paid = sum(invoice['amount_due'] * invoice['exchange_rate'] if not invoice['is_sale'] and not invoice['paid'] and invoice['currency'] != 'ZAR' else invoice['amount_due'] for invoice in invoices if not invoice['is_sale'] and not invoice['paid'])
 
-    # Considering exchange rate and currency for income and expense from invoices
+    # considering exchange rate and currency for income and expense from invoices
     income_invoices = sum(invoice['total']if invoice['is_sale'] and invoice['currency'] != 'ZAR' and not invoice['is_sale'] else invoice['total'] for invoice in invoices if invoice['is_sale'])
     expense_invoices = sum(invoice['total'] * invoice['exchange_rate'] if not invoice['is_sale'] and invoice['currency'] != 'ZAR' else invoice['total'] for invoice in invoices if not invoice['is_sale'])
 
-    # Considering exchange rate and currency for income and expense from payments
+    # considering exchange rate and currency for income and expense from payments
     income_payments = sum(payment['total'] if payment['is_income'] else 0 for payment in payments)
     expense_payments = sum(payment['total'] if not payment['is_income'] else 0 for payment in payments)
 
@@ -54,7 +58,7 @@ def home():
                             income_payments=income_payments,
                             expense_payments=expense_payments)
 
-# Find contact by ID in a list of contacts
+# find contact by ID in a list of contacts
 def find_contact_by_id(contact_id, contacts):
     return next((contact for contact in contacts if contact['id'] == contact_id), None)
 
@@ -66,6 +70,7 @@ def data_analytics():
     missing_customer_emails = 0
     missing_customer_phones = 0
 
+    # determine number of missing items
     for contact in contacts:
         if contact['is_supplier']:
             if contact['email'] is None:
@@ -135,9 +140,6 @@ def data_analytics():
         # Format the totals to two decimal places
     outstandingIncomeTotal = "{:.2f}".format(outstandingIncomeTotal)
     outstandingExpenseTotal = "{:.2f}".format(outstandingExpenseTotal)
-
-    print(outstandingIncomeTotal)
-    print(outstandingExpenseTotal)
 
     # Render the template with the calculated values
     return render_template('data_analytics.html', title='Data Analytics', contacts=contacts, 
