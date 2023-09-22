@@ -2,7 +2,7 @@ The entire project was created on google cloud, using google cloud shell to edit
 
 All website features (tables and graphs) are scalable according to the input data. 
 Functionality was the main priority compared to looks, although an attempt was made for it to be a little good looking. 
-The background picture loads on occasion and does not load all the time, not enough time was available to discover why. 
+The background picture loads on occasion and does not load all the time, not enough time was available to discover why. The images which would have been used in the background are under the resources folder in the repository. 
 Contact tables are visible only when selected. 
 All graphs are responsive. 
 
