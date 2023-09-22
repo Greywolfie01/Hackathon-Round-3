@@ -4,7 +4,7 @@
     <title>{{ title }}</title>
     <style>
         body {
-            background-image: url('https://970-cs-5f733fdf-d552-47ec-880d-423b9bd7ee00.cs-asia-southeast1-ajrg.cloudshell.dev/files/download/?id=b9d6ab07-2db4-48d0-8784-8d2899d2ac1d');
+            background-image: url('https://970-cs-5f733fdf-d552-47ec-880d-423b9bd7ee00.cs-asia-southeast1-ajrg.cloudshell.dev/files/download/?id=735a23fd-3015-467c-bd25-4ae6e4312788');
             background-size: cover;
             background-attachment: fixed;
             color: #fff;
@@ -16,7 +16,7 @@
             max-width: 800px;
             margin: auto;
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.9);
             border-radius: 10px;
         }
         table, th, td {
@@ -126,9 +126,70 @@
         </table>
 
         <h2>Financial Analytics</h2>
-        <p>Below is a graphical representation of the company's revenue over time. This chart provides insights into the financial performance of the organization, illustrating how revenue has fluctuated across different periods. The x-axis represents time, while the y-axis represents revenue in Rands. Use this chart to analyze trends and make informed financial decisions.</p>
-        <canvas id="financialChart" width="400" height="200"></canvas>
-        <canvas id="ModifiedfinancialChart" width="400" height="200"></canvas>
+        <p>Below is a graphical representation of the company's revenue over time. The following graph shows th day to day inflow and outflow of cash ensuring there is enough mone coming in to maintain a adequate cash flow</p>
+        
+        <div style="text-align: center;">
+            <h3>Day-to-day inflow/outflow chart</h3>
+            <canvas id="ModifiedfinancialChart" width="400" height="200"></canvas>
+        </div>
+        
+        <div style="text-align: center;">
+            <h3>Total flow of cash</h3>
+            <canvas id="financialChart" width="400" height="200"></canvas>
+        </div>
+        
+        <p>Following are the invoices that are yet to be paid/recieved and how much is owing.</p>
+        <div style="text-align: center;">
+            <h3>Outstanding Invoices</h3>
+            <canvas id="outstandingInvoicesChart" width="50" height="50"></canvas>
+        </div>
+        
+        <!-- Table for Outstanding Income Invoices -->
+        <h3>Outstanding Income Invoices</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Contact ID</th>
+                    <th>Amount Due</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in outstanding_income_invoices %}
+                <tr>
+                    <td>{{ invoice.invoice_id }}</td>
+                    <td>{{ invoice.contact_id['name'] if invoice.contact_id else 'N/A' }}</td>
+                    <td>{{ "%.2f"|format(invoice.amount_due) }}</td>
+                    <td>{{ invoice.due_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Table for Outstanding Expense Invoices -->
+        <h3>Outstanding Expense Invoices</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Contact</th>
+                    <th>Amount Due</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in outstanding_expense_invoices %}
+                <tr>
+                    <td>{{ invoice.invoice_id }}</td>
+                    <td>{{ invoice.contact_id['name'] if invoice.contact_id else 'N/A' }}</td>
+                    <td>{{ "%.2f"|format(invoice.amount_due) }}</td>
+                    <td>{{ invoice.due_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -163,8 +224,8 @@
             }
         }
 
-        var ctx = document.getElementById('financialChart').getContext('2d');
-        var financialChart = new Chart(ctx, {
+        var ctx1 = document.getElementById('financialChart').getContext('2d');
+        var financialChart = new Chart(ctx1, {
             type: 'line',
             data: {
                 labels: [{% for date in revenue_dates %}'{{ date }}',{% endfor %}],
@@ -186,7 +247,8 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Date'
+                            text: 'Date',
+                            color: 'white'
                         }
                     },
                     y: [
@@ -195,22 +257,44 @@
                             position: 'left',
                             title: {
                                 display: true,
-                                text : 'Revenue (in Rands)'
+                                text : 'Revenue (in Rands)',
+                                color: 'white'
                             },
-                            min: 0,
-                            max: 10000,
                             beginAtZero: true,
                             ticks: {
-                                stepSize: 1000
-                            }
+                                stepSize: 1000,
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'white'
+                            },
                         }
                     ]
                 }
             }
         })
 
-        var ctx = document.getElementById('ModifiedfinancialChart').getContext('2d');
-        var ModifiedfinancialChart = new Chart(ctx, {
+        var outstandingIncomeTotal = {{ outstandingIncomeTotal }};
+        var outstandingExpenseTotal = {{ outstandingExpenseTotal }};
+
+        // Pie chart for outstanding invoices
+        var ctx2 = document.getElementById('outstandingInvoicesChart').getContext('2d');
+        var outstandingInvoicesChart = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: ['Outstanding Income', 'Outstanding Expenses'],
+                datasets: [{
+                    data: [outstandingIncomeTotal, outstandingExpenseTotal],
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)']
+                }]
+            },
+            options: {
+                responsive: true,
+            }
+        })
+
+        var ctx3 = document.getElementById('ModifiedfinancialChart').getContext('2d');
+        var ModifiedfinancialChart = new Chart(ctx3, {
             type: 'line',
             data: {
                 labels: [{% for date in revenue_dates %}'{{ date }}',{% endfor %}],
@@ -232,7 +316,8 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Date'
+                            text: 'Date',
+                            color: 'white'
                         }
                     },
                     y: [
@@ -241,13 +326,13 @@
                             position: 'left',
                             title: {
                                 display: true,
-                                text : 'Revenue (in Rands)'
+                                text : 'Revenue (in Rands)',
+                                color: 'white'
                             },
-                            min: 0,
-                            max: 10000,
                             beginAtZero: true,
                             ticks: {
-                                stepSize: 1000
+                                stepSize: 1000,
+                                color: 'white'
                             }
                         }
                     ]
